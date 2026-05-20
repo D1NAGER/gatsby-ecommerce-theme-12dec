@@ -8,6 +8,8 @@ import Layout from '../components/Layout/Layout';
 import FormInputField from '../components/FormInputField/FormInputField';
 import Button from '../components/Button';
 
+import { pushSimpleEvent } from '../helpers/tracking';
+
 const LoginPage = (props) => {
   const initialState = {
     email: '',
@@ -48,20 +50,24 @@ const LoginPage = (props) => {
       tempError.password = '';
     }
 
-    if (validForm === true) {
-      setErrorForm(errorState);
+if (validForm === true) {
+  setErrorForm(errorState);
 
-      //mock login
-      if (loginForm.email !== 'error@example.com') {
-        navigate('/account');
-        window.localStorage.setItem('key', 'sampleToken');
-      } else {
-        window.scrollTo(0, 0);
-        setErrorMessage(
-          'There is no such account associated with this email address'
-        );
-      }
-    } else {
+  // mock login
+  if (loginForm.email !== 'error@example.com') {
+    pushSimpleEvent('login', {
+      method: 'email',
+    });
+
+    navigate('/account');
+    window.localStorage.setItem('key', 'sampleToken');
+  } else {
+    window.scrollTo(0, 0);
+    setErrorMessage(
+      'There is no such account associated with this email address'
+    );
+  }
+} else {
       setErrorMessage('');
       setErrorForm(tempError);
     }
