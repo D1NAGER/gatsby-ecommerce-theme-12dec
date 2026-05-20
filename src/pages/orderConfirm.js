@@ -1,11 +1,45 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import * as styles from './accountSuccess.module.css';
 
 import ActionCard from '../components/ActionCard';
 import Container from '../components/Container';
 import Layout from '../components/Layout/Layout';
 
+import { pushToDataLayer } from '../helpers/tracking';
+
+
+
 const OrderConfirmPage = (props) => {
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const alreadyTracked = sessionStorage.getItem('demo_purchase_tracked');
+
+    if (alreadyTracked) return;
+
+    pushToDataLayer('purchase', {
+      transaction_id: `demo_order_${Date.now()}`,
+      currency: 'USD',
+      value: 440,
+      tax: 0,
+      shipping: 0,
+      items: [
+        {
+          item_id: 'lambswool_crew_neck_jumper_001',
+          item_name: 'Lambswool Crew Neck Jumper',
+          item_category: 'Sweaters',
+          item_variant: 'Anthracite Melange / XS',
+          price: 220,
+          quantity: 2,
+        },
+      ],
+    });
+
+    sessionStorage.setItem('demo_purchase_tracked', 'true');
+  }, []);
+
+
+  
   return (
     <Layout disablePaddingBottom>
       <Container size={'medium'}>
