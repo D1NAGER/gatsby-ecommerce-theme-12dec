@@ -12,6 +12,8 @@ import Layout from '../components/Layout/Layout';
 import FormInputField from '../components/FormInputField/FormInputField';
 import Button from '../components/Button';
 
+import { pushSimpleEvent } from '../helpers/tracking';
+
 const SignupPage = (props) => {
   const initialState = {
     firstName: '',
@@ -62,14 +64,19 @@ const SignupPage = (props) => {
       validForm = false;
     }
 
-    if (validForm === true) {
-      setErrorForm(errorState);
-      navigate('/accountSuccess');
-      window.localStorage.setItem('key', 'sampleToken');
-      //create account endpoint
-    } else {
-      setErrorForm(tempError);
-    }
+ if (validForm === true) {
+  setErrorForm(errorState);
+
+  pushSimpleEvent('sign_up', {
+    method: 'email',
+  });
+
+  navigate('/accountSuccess');
+  window.localStorage.setItem('key', 'sampleToken');
+  // create account endpoint
+} else {
+  setErrorForm(tempError);
+}
   };
 
   return (
