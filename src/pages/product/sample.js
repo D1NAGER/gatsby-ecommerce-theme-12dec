@@ -1,5 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import * as styles from './sample.module.css';
+import { pushToDataLayer, mapProductToItem } from '../../helpers/tracking';
 
 import Accordion from '../../components/Accordion';
 import AdjustItem from '../../components/AdjustItem';
@@ -32,6 +33,35 @@ const ProductPage = (props) => {
   const [activeSize, setActiveSize] = useState(sampleProduct.sizeOptions[0]);
   const suggestions = generateMockProductData(4, 'woman');
 
+  useEffect(() => {
+  pushToDataLayer('view_item', {
+    currency: 'USD',
+    value: sampleProduct.price,
+    items: [
+      mapProductToItem(sampleProduct, {
+        variant: `${sampleProduct.colorOptions[0].title} / ${sampleProduct.sizeOptions[0]}`,
+      }),
+    ],
+  });
+}, []);
+
+  const handleAddToCart = () => {
+  const quantity = qty > 0 ? qty : 1;
+
+  pushToDataLayer('add_to_cart', {
+    currency: 'USD',
+    value: sampleProduct.price * quantity,
+    items: [
+      mapProductToItem(sampleProduct, {
+        quantity,
+        variant: `${activeSwatch.title} / ${activeSize}`,
+      }),
+    ],
+  });
+
+  showNotification();
+};
+  
   return (
     <Layout>
       <div className={styles.root}>
@@ -79,13 +109,13 @@ const ProductPage = (props) => {
 
               <div className={styles.actionContainer}>
                 <div className={styles.addToButtonContainer}>
-                  <Button
-                    onClick={() => showNotification()}
-                    fullWidth
-                    level={'primary'}
-                  >
-                    Add to Bag
-                  </Button>
+                 <Button
+  onClick={() => handleAddToCart()}
+  fullWidth
+  level={'primary'}
+>
+  Add to Bag
+</Button>
                 </div>
                 <div
                   className={styles.wishlistActionContainer}
