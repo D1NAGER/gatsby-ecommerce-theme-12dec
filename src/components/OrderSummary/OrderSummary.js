@@ -7,10 +7,33 @@ import CurrencyFormatter from '../CurrencyFormatter';
 
 import * as styles from './OrderSummary.module.css';
 
+import { pushToDataLayer } from '../../helpers/tracking';
+
 const OrderSummary = (props) => {
   const [coupon, setCoupon] = useState('');
   const [giftCard, setGiftCard] = useState('');
 
+  
+const handleBeginCheckout = () => {
+  pushToDataLayer('begin_checkout', {
+    currency: 'USD',
+    value: 440,
+    items: [
+      {
+        item_id: 'lambswool_crew_neck_jumper_1',
+        item_name: 'Lambswool Crew Neck Jumper',
+        item_category: 'Sweaters',
+        item_variant: 'Anthracite Melange / XS',
+        price: 220,
+        quantity: 2,
+      },
+    ],
+  });
+
+  navigate('/orderConfirm');
+};
+
+  
   return (
     <div className={styles.root}>
       <div className={styles.orderSummary}>
@@ -58,7 +81,7 @@ const OrderSummary = (props) => {
       </div>
       <div className={styles.actionContainer}>
         <Button
-          onClick={() => navigate('/orderConfirm')}
+          onClick={() => handleBeginCheckout()}
           fullWidth
           level={'primary'}
         >
