@@ -10,6 +10,8 @@ import OrderSummary from '../components/OrderSummary';
 
 import * as styles from './cart.module.css';
 
+import { pushToDataLayer } from '../helpers/tracking';
+
 const CartPage = (props) => {
   const sampleCartItem = {
     image: '/products/pdp1.jpeg',
@@ -19,7 +21,26 @@ const CartPage = (props) => {
     color: 'Anthracite Melange',
     size: 'XS',
   };
+  
+const cartItems = [
+  sampleCartItem,
+  sampleCartItem,
+];
 
+useEffect(() => {
+  pushToDataLayer('view_cart', {
+    currency: 'USD',
+    value: 440,
+    items: cartItems.map((item, index) => ({
+      item_id: `lambswool_crew_neck_jumper_${index + 1}`,
+      item_name: item.name,
+      item_category: 'Sweaters',
+      item_variant: `${item.color} / ${item.size}`,
+      price: item.price,
+      quantity: 1,
+    })),
+  });
+}, []);
   return (
     <div>
       <div className={styles.contentContainer}>
