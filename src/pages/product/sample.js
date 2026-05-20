@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import * as styles from './sample.module.css';
 
 import Accordion from '../../components/Accordion';
