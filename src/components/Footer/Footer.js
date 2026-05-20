@@ -10,14 +10,24 @@ import Button from '../Button';
 import Config from '../../config.json';
 import * as styles from './Footer.module.css';
 
+import { pushSimpleEvent } from '../../helpers/tracking';
+
+
 const Footer = (prop) => {
   const [email, setEmail] = useState('');
 
-  const subscribeHandler = (e) => {
-    e.preventDefault();
-    setEmail('');
-    console.log('Subscribe this email: ', email);
-  };
+ const subscribeHandler = (e) => {
+  e.preventDefault();
+
+  pushSimpleEvent('generate_lead', {
+    form_id: 'footer_newsletter',
+    form_name: 'Footer Newsletter',
+    lead_type: 'newsletter_signup',
+  });
+
+  setEmail('');
+  console.log('Subscribe this email: ', email);
+};
 
   const handleSocialClick = (platform) => {
     window.open(Config.social[platform]);
