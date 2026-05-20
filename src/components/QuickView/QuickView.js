@@ -10,6 +10,7 @@ import AddItemNotificationContext from '../../context/AddItemNotificationProvide
 
 import * as styles from './QuickView.module.css';
 import { toOptimizedImage } from '../../helpers/general';
+import { pushToDataLayer, mapProductToItem } from '../../helpers/tracking';
 
 const QuickView = (props) => {
   const { close, buttonTitle = 'Add to Bag' } = props;
@@ -23,9 +24,20 @@ const QuickView = (props) => {
   const [activeSize, setActiveSize] = useState(sampleProduct.sizeOptions[0]);
 
   const handleAddToBag = () => {
-    close();
-    showNotification();
-  };
+  pushToDataLayer('add_to_cart', {
+    currency: 'USD',
+    value: sampleProduct.price,
+    items: [
+      mapProductToItem(sampleProduct, {
+        quantity: 1,
+        variant: `${activeSwatch.title} / ${activeSize}`,
+      }),
+    ],
+  });
+
+  close();
+  showNotification();
+};
 
   return (
     <div className={styles.root}>
